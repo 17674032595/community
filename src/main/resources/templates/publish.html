@@ -1,15 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>麻将社区</title>
+    <title>发布-麻将社区</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-
-
-
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -39,36 +35,19 @@
                         <li><a href="#">退出登陆</a></li>
                     </ul>
                 </li>
-                <!--<li th:unless="${session.user!=null}"><a href="#" th:href="@{https://github.com/login/oauth/authorize(client_id=${clientId},redirect_uri=${redirectUri},scope='user',state=1)}">登陆</a></li>-->
-                <li th:unless="${session.user!=null}"> <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-                   登陆
-                </button></li>
-
-
-                <!-- Modal -->
-
+                <li th:unless="${session.user!=null}"><a href="#" th:href="@{https://github.com/login/oauth/authorize(client_id=${clientId},redirect_uri=${redirectUri},scope='user',state=1)}">登陆</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 
 
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">登录方式</h4>
-                </div>
-                <div class="modal-body">
-                    <img src="img/qq.png" height="150px" width="19%"/>
-                    <img src="img/github.png" height="150px" width="19%"/>
-                    <img src="img/weibo.png" height="150px" width="19%"/>
-                    <img src="/img/支付宝.png" height="150px" width="19%"/>
-                    <img src="/img/微信.png" height="150px" width="19%"/>
-                </div>
-            </div>
+</nav>
+<!--<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-">
+
         </div>
     </div>
-</nav>
+</div>-->
 </body>
 </html>

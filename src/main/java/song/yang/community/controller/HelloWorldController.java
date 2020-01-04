@@ -12,7 +12,9 @@ import song.yang.community.dto.GitHubUser;
 import song.yang.community.mapper.UserMapper;
 import song.yang.community.model.User;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 /**
@@ -34,15 +36,29 @@ public class HelloWorldController {
     private UserMapper userMapper;
 
     @GetMapping("/")
-    public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
+    public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model,HttpServletRequest request) {
         model.addAttribute("name", name);
         model.addAttribute("clientId", clientId);
         model.addAttribute("redirectUri", redirectUri);
+        Cookie[] cookies = request.getCookies();
+        if(cookies!=null) {
+            for (Cookie coo : cookies) {
+                if ("token".equals(coo.getName())) {
+                    // 查询数据库是否存在该用户
+                    User user = userMapper.selectOneByToken(coo.getValue());
+                    if (user != null) {
+                        request.getSession().setAttribute("user", user);
+                    }
+                    break;
+                }
+            }
+        }
         return "index";
     }
 
     @GetMapping("/callback")
-    public String callback(String code, String state, HttpServletRequest request) {
+    public String callback(String code, String state, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("code ---"+code);
         GitHubAccessToken gitHubAccessToken=new GitHubAccessToken(clientId,clientSecret,code,redirectUri,state);
         String accessToken = gitHubUtil.getAccessToken(gitHubAccessToken);
         GitHubUser gitHubUser=gitHubUtil.getUser(accessToken);
@@ -54,8 +70,16 @@ public class HelloWorldController {
             user.setToken(UUID.randomUUID().toString());
             user.setName(gitHubUser.getName());
             userMapper.insertUser(user);
-            request.getSession().setAttribute("user", gitHubUser);
+            System.out.println(user.getId());
+            response.addCookie(new Cookie("token",user.getToken()));
+
+            //request.getSession().setAttribute("user", gitHubUser);
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/1")
+    public String bootstrapDemo(){
+        return "1";
     }
 }

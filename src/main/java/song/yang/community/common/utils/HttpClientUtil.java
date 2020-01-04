@@ -1,9 +1,10 @@
-/*
 package song.yang.community.common.utils;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -11,75 +12,60 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-*/
-/**
+/*
  * @Auther: song
  * @Date: 2019/8/8 15:17
  * @Description:
- *//*
 
-public class HttpClientUtil {
-    */
-/**
-     * 简单httpclient实例
-     *
-     * @author arron
-     * @date 2015年11月11日 下午6:36:49
-     * @version 1.0
-     *//*
-
-
-        */
-/**
-         * 模拟请求
-         *
-         * @param url		资源地址
-         * @param map	参数列表
-         * @param encoding	编码
-         * @return
-         * @throws ParseException
-         * @throws IOException
-         *//*
-
-        public static String send(String url, Map<String,String> map,String encoding) throws ParseException, IOException {
-            String body = "";
-
-            //创建httpclient对象
-            CloseableHttpClient client = HttpClients.createDefault();
-            //创建post方式请求对象
-            HttpPost httpPost = new HttpPost(url);
-
-            //装填参数
-            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-            if(map!=null){
-                for (Entry<String, String> entry : map.entrySet()) {
-                    nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-                }
-            }
-            //设置参数到请求对象中
-            httpPost.setEntity(new UrlEncodedFormEntity(nvps, encoding));
-
-            System.out.println("请求地址："+url);
-            System.out.println("请求参数："+nvps.toString());
-
-            //设置header信息
-            //指定报文头【Content-type】、【User-Agent】
-            httpPost.setHeader("Content-type", "application/x-www-form-urlencoded");
-            httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-
-            //执行请求操作，并拿到结果（同步阻塞）
-            CloseableHttpResponse response = client.execute(httpPost);
-            //获取结果实体
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                //按指定编码转换结果实体为String类型
-                body = EntityUtils.toString(entity, encoding);
-            }
-            EntityUtils.consume(entity);
-            //释放链接
-            response.close();
-            return body;
-        }
-}
 */
+public class HttpClientUtil {
+
+    static CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    public static String getSend(String url) throws IOException {
+        HttpGet httpGet = new HttpGet(url);
+        CloseableHttpResponse response1 = httpclient.execute(httpGet);
+
+        try {
+            System.out.println(response1.getStatusLine());
+            HttpEntity entity1 = response1.getEntity();
+            // do something useful with the response body
+            // and ensure it is fully consumed
+            EntityUtils.consume(entity1);
+            System.out.println(entity1);
+            return entity1.toString();
+        } finally {
+            response1.close();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        postSend();
+    }
+   public static String postSend() throws IOException{
+        HttpPost httpPost = new HttpPost("https://github.com/login/oauth/access_token");
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("client_id", "81c6c3ff78fe367cbde3"));
+        nvps.add(new BasicNameValuePair("client_secret", "d64e9028b8676fe1a0732d0f59c43fa9b223582e"));
+        nvps.add(new BasicNameValuePair("code", "e2a187db1d929e6d2dd6"));
+        nvps.add(new BasicNameValuePair("redirect_uri", "http://localhost:8080/callback"));
+        nvps.add(new BasicNameValuePair("state", "1"));
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+        CloseableHttpResponse response2 = httpclient.execute(httpPost);
+
+    try {
+            System.out.println(response2.getStatusLine());
+            HttpEntity entity2 = response2.getEntity();
+            // do something useful with the response body
+            // and ensure it is fully consumed
+            EntityUtils.consume(entity2);
+        } finally {
+            response2.close();
+    }
+    return null;
+
+    }
+}
